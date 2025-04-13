@@ -10,11 +10,24 @@ spring:
       enabled: true
   jpa:
     hibernate:
-      ddl-auto: create # TODO create-drop update ??
-    show-sql: true
+      ddl-auto: create
     open-in-view: false
     defer-datasource-initialization: true
+    properties:
+      hibernate.hibernate.default_batch_fetch_size: 30
+      hibernate:
+        format_sql: true
+        show_sql: true
   sql:
     init:
       mode: always
       data-locations: classpath:data.sql
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        orm:
+          jdbc:
+            bind: TRACE

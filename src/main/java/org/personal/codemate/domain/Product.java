@@ -17,7 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Getter
-@ToString
+@ToString(exclude = "brand")
 @Entity(name = "product")
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // for JPA
 public class Product {
@@ -50,5 +50,24 @@ public class Product {
 		product.price = command.price();
 		product.brand = brand;
 		return product;
+	}
+
+	/**
+	 * brand와 관계 끊기
+	 */
+	void disconnectBrand() {
+		this.brand = null;
+	}
+
+	/**
+	 * 상품 정보 업데이트
+	 * @param command 업데이트할 데이터
+	 */
+	public void update(UpsertBrandCommand.Product command) {
+		if (Objects.isNull(command.category()) || Objects.isNull(command.price())) {
+			throw new IllegalArgumentException("There is missing information in the product");
+		}
+		this.category = command.category();
+		this.price = command.price();
 	}
 }

@@ -57,12 +57,8 @@ public class Brand {
 			throw new IllegalArgumentException("product list is empty");
 		}
 
-		List<Product> newProducts = brandProducts.stream().map(bp -> Product.newProduct(bp, newBrand)).toList();
-		Set<Category> productCategories = newProducts.stream().map(Product::getCategory).collect(Collectors.toSet());
-
-		if (Category.values().length != productCategories.size()) {
-			throw new IllegalArgumentException("Each brand must have products in all categories.");
-		}
+		List<Product> newProducts = brandProducts.stream().map(bp -> Product.newProduct(bp, newBrand)).collect(Collectors.toList());
+		validateProducts(newProducts);
 
 		newBrand.products = newProducts;
 		return newBrand;
@@ -73,5 +69,62 @@ public class Brand {
 	 * @param command 업데이트할 브랜드 정보
 	 */
 	public void update(UpsertBrandCommand command) {
+		// brand info update
+		if (!StringUtils.hasText(command.name())) {
+			throw new IllegalArgumentException("the name of the brand cannot be empty");
+		}
+		this.name = command.name();
+
+		// product info update
+		// 2. product 데이터 비교 및 아이디 같으면 update & 없는 id는 삭제 & 새로운 데이터 추가
+		Map<Long, UpsertBrandCommand.Product> productsToUpdate = command.products().stream()
+			.filter(p -> Objects.nonNull(p.id()))
+			.collect(Collectors.toMap(UpsertBrandCommand.Product::id, p -> p));
+
+		List<UpsertBrandCommand.Product> newProductToAdd = command.products().stream()
+			.filter(p -> Objects.isNull(p.id()))
+			.toList();
+
+		// delete products
+		this.getProducts().removeIf(p -> {
+			boolean isDelete = !productsToUpdate.containsKey(p.getId());
+			if (isDelete) {
+				p.disconnectBrand();
+			}
+			return isDelete;
+		});
+
+		// update products
+		if (this.products.size() != productsToUpdate.size()) {
+			throw new IllegalArgumentException("The products to be updated do not match the existing products");
+		}
+		for (Product product : this.products) {
+			if (productsToUpdate.containsKey(product.getId())) {
+				product.update(productsToUpdate.get(product.getId()));
+			}
+		}
+
+		// add new Product
+		List<Product> newProducts = newProductToAdd.stream()
+			.map(newProduct -> Product.newProduct(newProduct, this))
+			.toList();
+		this.products.addAll(newProducts);
+
+		validateProducts(this.products);
+	}
+
+	/**
+	 * 브랜드의 상품들이 올바르게 세팅되었는지 검증한다.
+	 * @param products 상품들
+	 */
+	static private void validateProducts(List<Product> products) {
+		if (CollectionUtils.isEmpty(products)) {
+			throw new IllegalArgumentException("product list is empty");
+		}
+		Set<Category> productCategories = products.stream().map(Product::getCategory).collect(Collectors.toSet());
+
+		if (Category.values().length != productCategories.size()) {
+			throw new IllegalArgumentException("Each brand must have products in all categories.");
+		}
 	}
 }
