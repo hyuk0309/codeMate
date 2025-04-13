@@ -1,6 +1,4 @@
-package org.personal.codemate;
-
-import org.personal.codemate.model.Brand;
+package org.personal.codemate.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

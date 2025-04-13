@@ -1,4 +1,4 @@
-package org.personal.codemate.model;
+package org.personal.codemate.domain;
 
 public enum Category {
 	TOP,

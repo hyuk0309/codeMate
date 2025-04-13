@@ -1,6 +1,4 @@
-package org.personal.codemate;
-
-import org.personal.codemate.model.Product;
+package org.personal.codemate.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

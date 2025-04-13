@@ -1,5 +1,6 @@
-package org.personal.codemate.model;
+package org.personal.codemate.domain;
 
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,4 +34,21 @@ public class Product {
 	private Brand brand;
 
 	private Integer price;
+
+	/**
+	 * 새로운 상품을 만든다.
+	 * @param command 새로운 상품 정보
+	 * @return 새로운 상품
+	 */
+	static Product newProduct(UpsertBrandCommand.Product command, Brand brand) {
+		if (Objects.nonNull(command.id()) || Objects.isNull(command.category()) || Objects.isNull(command.price())) {
+			throw new IllegalArgumentException("There is missing information in the product");
+		}
+
+		Product product = new Product();
+		product.category = command.category();
+		product.price = command.price();
+		product.brand = brand;
+		return product;
+	}
 }
