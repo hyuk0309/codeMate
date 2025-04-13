@@ -26,7 +26,7 @@ public class BrandService {
 	}
 
 	private Brand updateExistsBrand(UpsertBrandCommand command) {
-		Brand brand = brandRepository.findById(command.id()).orElseThrow(() -> new IllegalArgumentException("invalid brand id: " + command.id()));
+		Brand brand = brandRepository.findById(command.id()).orElseThrow(() -> new InvalidRequestException("invalid brand id: " + command.id()));
 		brand.update(command);
 		brandRepository.save(brand);
 		return brand;

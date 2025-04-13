@@ -42,7 +42,7 @@ public class Product {
 	 */
 	static Product newProduct(UpsertBrandCommand.Product command, Brand brand) {
 		if (Objects.nonNull(command.id()) || Objects.isNull(command.category()) || Objects.isNull(command.price())) {
-			throw new IllegalArgumentException("There is missing information in the product");
+			throw new InvalidRequestException("There is missing information in the product");
 		}
 
 		Product product = new Product();
@@ -65,7 +65,7 @@ public class Product {
 	 */
 	public void update(UpsertBrandCommand.Product command) {
 		if (Objects.isNull(command.category()) || Objects.isNull(command.price())) {
-			throw new IllegalArgumentException("There is missing information in the product");
+			throw new InvalidRequestException("There is missing information in the product");
 		}
 		this.category = command.category();
 		this.price = command.price();

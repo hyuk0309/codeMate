@@ -32,7 +32,7 @@ class ProductTest {
 		Brand brand = new Brand();
 
 		// when then
-		assertThatThrownBy(() -> Product.newProduct(product, brand)).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> Product.newProduct(product, brand)).isInstanceOf(InvalidRequestException.class);
 	}
 
 	@DisplayName("가격이 존재하지 않아 상품 생성에 실패한다.")
@@ -44,7 +44,7 @@ class ProductTest {
 		Brand brand = new Brand();
 
 		// when then
-		assertThatThrownBy(() -> Product.newProduct(product, brand)).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> Product.newProduct(product, brand)).isInstanceOf(InvalidRequestException.class);
 	}
 
 }

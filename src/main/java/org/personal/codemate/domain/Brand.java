@@ -46,7 +46,7 @@ public class Brand {
 
 		// validate brand info
 		if (Objects.nonNull(command.id()) || !StringUtils.hasText(command.name())) {
-			throw new IllegalArgumentException("the name of the brand cannot be empty");
+			throw new InvalidRequestException("the name of the brand cannot be empty");
 		}
 		Brand newBrand = new Brand();
 		newBrand.name = command.name();
@@ -54,7 +54,7 @@ public class Brand {
 		// validate products info
 		List<UpsertBrandCommand.Product> brandProducts = command.products();
 		if (CollectionUtils.isEmpty(brandProducts)) {
-			throw new IllegalArgumentException("product list is empty");
+			throw new InvalidRequestException("product list is empty");
 		}
 
 		List<Product> newProducts = brandProducts.stream().map(bp -> Product.newProduct(bp, newBrand)).collect(Collectors.toList());
@@ -71,7 +71,7 @@ public class Brand {
 	public void update(UpsertBrandCommand command) {
 		// brand info update
 		if (!StringUtils.hasText(command.name())) {
-			throw new IllegalArgumentException("the name of the brand cannot be empty");
+			throw new InvalidRequestException("the name of the brand cannot be empty");
 		}
 		this.name = command.name();
 
@@ -96,7 +96,7 @@ public class Brand {
 
 		// update products
 		if (this.products.size() != productsToUpdate.size()) {
-			throw new IllegalArgumentException("The products to be updated do not match the existing products");
+			throw new InvalidRequestException("The products to be updated do not match the existing products");
 		}
 		for (Product product : this.products) {
 			if (productsToUpdate.containsKey(product.getId())) {
@@ -119,12 +119,12 @@ public class Brand {
 	 */
 	static private void validateProducts(List<Product> products) {
 		if (CollectionUtils.isEmpty(products)) {
-			throw new IllegalArgumentException("product list is empty");
+			throw new InvalidRequestException("product list is empty");
 		}
 		Set<Category> productCategories = products.stream().map(Product::getCategory).collect(Collectors.toSet());
 
 		if (Category.values().length != productCategories.size()) {
-			throw new IllegalArgumentException("Each brand must have products in all categories.");
+			throw new InvalidRequestException("Each brand must have products in all categories.");
 		}
 	}
 }

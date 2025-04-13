@@ -48,7 +48,7 @@ class BrandTest {
 
 			// when then
 			assertThatThrownBy(() -> Brand.createNewBrand(command))
-				.isInstanceOf(IllegalArgumentException.class);
+				.isInstanceOf(InvalidRequestException.class);
 		}
 
 		@DisplayName("브랜드에 상품이 존재하지 않아 생성에 실패한다.")
@@ -59,7 +59,7 @@ class BrandTest {
 			UpsertBrandCommand command = new UpsertBrandCommand(null, "Nike", emptyProducts);
 
 			// when then
-			assertThatThrownBy(() -> Brand.createNewBrand(command)).isInstanceOf(IllegalArgumentException.class);
+			assertThatThrownBy(() -> Brand.createNewBrand(command)).isInstanceOf(InvalidRequestException.class);
 		}
 
 		@DisplayName("브랜드에 모든 카테고리 상품이 적어도 1개씩 존재하지 않아, 생성에 실패한다.")
@@ -80,7 +80,7 @@ class BrandTest {
 			UpsertBrandCommand command = new UpsertBrandCommand(null, "Nike", missingCategoryProducts);
 
 			// when then
-			assertThatThrownBy(() -> Brand.createNewBrand(command)).isInstanceOf(IllegalArgumentException.class);
+			assertThatThrownBy(() -> Brand.createNewBrand(command)).isInstanceOf(InvalidRequestException.class);
 		}
 	}
 
@@ -118,7 +118,7 @@ class BrandTest {
 			UpsertBrandCommand command = new UpsertBrandCommand(brand.getId(), newBrandName, productsToUpdate);
 
 			// when then
-			assertThatThrownBy(() -> brand.update(command)).isInstanceOf(IllegalArgumentException.class);
+			assertThatThrownBy(() -> brand.update(command)).isInstanceOf(InvalidRequestException.class);
 		}
 
 		@DisplayName("브랜드의 기존 상품을 변경한다.")
@@ -152,7 +152,7 @@ class BrandTest {
 			UpsertBrandCommand command = new UpsertBrandCommand(brand.getId(), brand.getName(), productsToUpdate);
 
 			// when then
-			assertThatThrownBy(() -> brand.update(command)).isInstanceOf(IllegalArgumentException.class);
+			assertThatThrownBy(() -> brand.update(command)).isInstanceOf(InvalidRequestException.class);
 		}
 
 		@DisplayName("잘못된 정보의 상품으로 업데이트한다.")
@@ -166,7 +166,7 @@ class BrandTest {
 			UpsertBrandCommand command = new UpsertBrandCommand(brand.getId(), brand.getName(), productsToUpdate);
 
 			// when then
-			assertThatThrownBy(() -> brand.update(command)).isInstanceOf(IllegalArgumentException.class);
+			assertThatThrownBy(() -> brand.update(command)).isInstanceOf(InvalidRequestException.class);
 		}
 
 		@DisplayName("브랜드에 새로운 상품을 추가한다")
