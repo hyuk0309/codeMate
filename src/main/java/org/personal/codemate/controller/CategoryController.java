@@ -19,7 +19,7 @@ class CategoryController {
 
 	@GetMapping("/v1.0/categories/lowest-prices")
 	ResponseEntity<CategoryLowestPriceSummary> getLowestPriceProductsByCategory() {
-		CategoryLowestPriceSummary categoryLowestPriceSummary = lowestCategoryService.summarizeLowestPricesByCategory();
+		CategoryLowestPriceSummary categoryLowestPriceSummary = lowestCategoryService.getLowestPriceAndBrandSummary();
 		return ResponseEntity.ok(categoryLowestPriceSummary);
 	}
 

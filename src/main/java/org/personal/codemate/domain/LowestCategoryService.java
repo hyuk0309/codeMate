@@ -8,19 +8,20 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class LowestCategoryService {
+public class LowestCategoryService implements CommandLineRunner {
 
 	private final ProductRepository productRepository;
 
-	@Transactional(readOnly = true)
-	public CategoryLowestPriceSummary summarizeLowestPricesByCategory() {
-		List<Product> allProducts = productRepository.findAll();
+	private CategoryLowestPriceSummary cachedLowestPriceAndBrandSummary;
+
+	public synchronized void summarizeLowestPricesByCategory() {
+		List<Product> allProducts = productRepository.findAllWithBrand();
 
 		Map<Category, Product> lowestProductsByCategory = allProducts.stream()
 			.collect(Collectors.groupingBy(
@@ -31,25 +32,34 @@ public class LowestCategoryService {
 				)));
 
 		Map<Category, CategoryLowestPriceSummary.BrandInfo> sortedBrandInfoMap = lowestProductsByCategory.entrySet().stream()
-				.sorted(Comparator.comparing(entry -> entry.getKey().name())) // category 사전순 정렬
-				.collect(Collectors.toMap(
-					Map.Entry::getKey, // 키 그대로
-					entry -> {
-						Product product = entry.getValue();
-						return new CategoryLowestPriceSummary.BrandInfo(
-							product.getBrand().getName(),
-							product.getPrice()
-						);
-					},
-					(e1, e2) -> e1, // 병합 정책 (사실 충돌 없음)
-					LinkedHashMap::new // 순서 유지
-				));
+			.sorted(Comparator.comparing(entry -> entry.getKey().name())) // category 사전순 정렬
+			.collect(Collectors.toMap(
+				Map.Entry::getKey, // 키 그대로
+				entry -> {
+					Product product = entry.getValue();
+					return new CategoryLowestPriceSummary.BrandInfo(
+						product.getBrand().getName(),
+						product.getPrice()
+					);
+				},
+				(e1, e2) -> e1, // 병합 정책 (사실 충돌 없음)
+				LinkedHashMap::new // 순서 유지
+			));
 
 		int totalPrice = sortedBrandInfoMap.values().stream()
 			.map(CategoryLowestPriceSummary.BrandInfo::price)
 			.mapToInt(Integer::intValue)
 			.sum();
 
-		return new CategoryLowestPriceSummary(sortedBrandInfoMap, totalPrice);
+		this.cachedLowestPriceAndBrandSummary = new CategoryLowestPriceSummary(sortedBrandInfoMap, totalPrice);
+	}
+
+	public CategoryLowestPriceSummary getLowestPriceAndBrandSummary() {
+		return cachedLowestPriceAndBrandSummary;
+	}
+
+	@Override
+	public void run(String... args) {
+		summarizeLowestPricesByCategory();
 	}
 }
