@@ -62,4 +62,20 @@ public class LowestCategoryService implements CommandLineRunner {
 	public void run(String... args) {
 		summarizeLowestPricesByCategory();
 	}
+
+	public RecommendCategoryCody getCategoryProduct(Category category) {
+		List<Product> products = productRepository.finddByCategoryWithBrand(category);
+
+		RecommendCategoryCody.ProductInfo cheapestProduct = products.stream()
+			.min(Comparator.comparing(Product::getPrice))
+			.map(product -> new RecommendCategoryCody.ProductInfo(product.getBrand().getName(), product.getPrice()))
+			.orElseThrow(IllegalStateException::new);
+
+		RecommendCategoryCody.ProductInfo expensiveProduct = products.stream()
+			.max(Comparator.comparing(Product::getPrice))
+			.map(product -> new RecommendCategoryCody.ProductInfo(product.getBrand().getName(), product.getPrice()))
+			.orElseThrow(() -> new IllegalStateException("No expensive product found"));
+
+		return new RecommendCategoryCody(category.name(), cheapestProduct, expensiveProduct);
+	}
 }
