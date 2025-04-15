@@ -23,7 +23,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Getter
-@ToString
+@ToString(exclude = "products")
 @Entity(name = "brand")
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // for JPA
 public class Brand {
