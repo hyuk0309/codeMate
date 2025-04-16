@@ -12,14 +12,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BrandChangeListener {
 
-	private final LowestCategoryService lowestCategoryService;
-	private final LowestBrandService lowestBrandService;
+	private final CodyService codyService;
 
 	@Async
 	@EventListener
 	void onBrandChange(BrandChangeEvent event) {
-		lowestCategoryService.summarizeLowestPricesByCategory();
-		lowestBrandService.loadLowestPriceBrandAndProductByCategory();
+		codyService.handleEvent();
 	}
 
 }

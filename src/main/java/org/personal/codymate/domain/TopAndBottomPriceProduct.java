@@ -1,9 +1,9 @@
 package org.personal.codymate.domain;
 
-public record RecommendCategoryCody(
+public record TopAndBottomPriceProduct(
 	String category,
-	ProductInfo lowest,
-	ProductInfo highest
+	ProductInfo bottom,
+	ProductInfo top
 ) {
 	public record ProductInfo(String brand, Integer price) {}
 }

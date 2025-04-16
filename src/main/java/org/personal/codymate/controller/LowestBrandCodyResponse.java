@@ -1,6 +1,6 @@
 package org.personal.codymate.controller;
 
-import org.personal.codymate.domain.LowestBrandCody;
+import org.personal.codymate.domain.LowestPriceSummaryByBrand;
 
-record LowestBrandCodyResponse(LowestBrandCody lowestPrice) {
+record LowestBrandCodyResponse(LowestPriceSummaryByBrand lowestPrice) {
 }
