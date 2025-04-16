@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 고객에게 제공되는 API
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -24,27 +27,27 @@ class CodyController {
 	private final LowestBrandService lowestBrandService;
 
 	/**
-	 * 카테고리별 최저가 브랜드와 상품 조회 API
+	 * 카테고리별 최저가 상품으로 가능한 코디 조합 제공 API
 	 */
-	@GetMapping("/v1.0/categories/lowest-prices")
+	@GetMapping("/v1.0/cody/categories/lowest-price-summary")
 	ResponseEntity<CategoryLowestPriceSummary> getLowestPriceProductsByCategory() {
 		CategoryLowestPriceSummary categoryLowestPriceSummary = lowestCategoryService.getLowestPriceAndBrandSummary();
 		return ResponseEntity.ok(categoryLowestPriceSummary);
 	}
 
 	/**
-	 * 단일 브랜드 최저가 조합 조회 API
+	 * 단일 브랜드로 최저 가격으로 가능한 코디 조합 제공 API
 	 */
-	@GetMapping("/v1.0/brands/lowest-combi")
+	@GetMapping("/v1.0/cody/brands/lowest-price-summary")
 	ResponseEntity<LowestBrandCodyResponse> getLowestPriceProductsBySingleBrand() {
 		LowestBrandCody lowestBrandCody = lowestBrandService.getLowestPriceAndBrandSummary();
 		return ResponseEntity.ok(new LowestBrandCodyResponse(lowestBrandCody));
 	}
 
 	/**
-	 * 카테고리의 최저가, 취고가 브랜드 및 상품 조회 API
+	 * 특정 카테고리 최저가, 최고가 상품 제공 API
 	 */
-	@GetMapping("/v1.0/cody/categories/{category}")
+	@GetMapping("/v1.0/cody/categories/{category}/top-bottom-price")
 	ResponseEntity<RecommendCategoryCody> getProductByCategory(@PathVariable("category") Category category) {
 		return ResponseEntity.ok(lowestCategoryService.getCategoryProduct(category));
 	}

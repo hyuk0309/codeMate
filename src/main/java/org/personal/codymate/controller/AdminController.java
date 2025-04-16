@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 운영자에게 제공하는 api
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-class BrandController {
+class AdminController {
 
 	private final BrandService brandService;
 
