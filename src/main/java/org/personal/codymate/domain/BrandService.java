@@ -4,11 +4,16 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.personal.codymate.repository.BrandRepository;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * 브랜드와 포함된 상품 정보를 변경하는 서비스입니다.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

@@ -1,6 +1,9 @@
-package org.personal.codymate.domain;
+package org.personal.codymate.repository;
 
 import java.util.List;
+
+import org.personal.codymate.domain.Category;
+import org.personal.codymate.domain.Product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

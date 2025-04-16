@@ -22,6 +22,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
+/**
+ * 브랜드 도메인 모델
+ */
 @Getter
 @ToString(exclude = "products")
 @Entity(name = "brand")

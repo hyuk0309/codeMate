@@ -16,6 +16,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+/**
+ * 상품 도메인 모델
+ */
 @Getter
 @ToString(exclude = "brand")
 @Entity(name = "product")
