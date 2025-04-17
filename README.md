@@ -144,11 +144,6 @@ curl --location 'http://localhost:8080/v1.0/cody/brands/lowest-price-summary'
 curl --location 'http://localhost:8080/v1.0/cody/categories/top/top-bottom-price'
 ```
 
-### # 4. 브랜드 및 상품 추가/수정/삭제
-
-모든 기능을 하나의 api로 제공하기 위해 요청 데이터 그대로를 반영하는 방식으로 개발했습니다.
-id가 없으면 새로운 데이터를 의미하고, id가 존재하면 기존 데이터 수정을 의미합니다.
-
 ## 구현 설명
 
 ### 브랜드 및 상품 정보 추가/수정/삭제
