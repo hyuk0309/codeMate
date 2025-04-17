@@ -13,12 +13,20 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 /**
  * 상품 도메인 모델
  */
+@Table(
+	name = "product",
+	indexes = {
+		@Index(name = "idx_category_price", columnList = "category, price")
+	}
+)
 @Getter
 @ToString(exclude = "brand")
 @Entity(name = "product")

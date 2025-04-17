@@ -4,12 +4,12 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.personal.codymate.repository.ProductRepository;
 
 import org.springframework.boot.CommandLineRunner;
@@ -69,7 +69,7 @@ public class CodyService implements CommandLineRunner {
 		return lowestPriceSummaryByCategory;
 	}
 
-	void summarizeLowestPriceByBrand() {
+	synchronized void summarizeLowestPriceByBrand() {
 		List<Product> allProducts = productRepository.findAllWithBrand();
 
 		Map<Brand, Map<Category, Product>> resultMap = allProducts.stream()
@@ -108,19 +108,18 @@ public class CodyService implements CommandLineRunner {
 	}
 
 	public TopAndBottomPriceProduct findTopAndBottomPriceProducts(Category category) {
-		List<Product> products = productRepository.finddByCategoryWithBrand(category);
+		CompletableFuture<Product> lowestPriceProductFuture = CompletableFuture.supplyAsync(() -> productRepository.findLowestPriceProduct(category));
+		CompletableFuture<Product> highestPriceProductFuture = CompletableFuture.supplyAsync(() -> productRepository.findHighestPriceProduct(category));
 
-		TopAndBottomPriceProduct.ProductInfo cheapestProduct = products.stream()
-			.min(Comparator.comparing(Product::getPrice))
-			.map(product -> new TopAndBottomPriceProduct.ProductInfo(product.getBrand().getName(), product.getPrice()))
-			.orElseThrow(IllegalStateException::new);
+		CompletableFuture.allOf(lowestPriceProductFuture, highestPriceProductFuture).join();
 
-		TopAndBottomPriceProduct.ProductInfo expensiveProduct = products.stream()
-			.max(Comparator.comparing(Product::getPrice))
-			.map(product -> new TopAndBottomPriceProduct.ProductInfo(product.getBrand().getName(), product.getPrice()))
-			.orElseThrow(() -> new IllegalStateException("No expensive product found"));
+		Product lowestPriceProduct = lowestPriceProductFuture.join();
+		Product highestPriceProduct = highestPriceProductFuture.join();
 
-		return new TopAndBottomPriceProduct(category.name(), cheapestProduct, expensiveProduct);
+		return new TopAndBottomPriceProduct(
+			category.name(),
+			new TopAndBottomPriceProduct.ProductInfo(highestPriceProduct.getBrand().getName(), highestPriceProduct.getPrice()),
+			new TopAndBottomPriceProduct.ProductInfo(lowestPriceProduct.getBrand().getName(), lowestPriceProduct.getPrice()));
 	}
 
 	public void handleEvent() {
